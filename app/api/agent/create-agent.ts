@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { getVercelAITools } from "@coinbase/agentkit-vercel-ai-sdk";
 import { prepareAgentkitAndWalletProvider } from "./prepare-agentkit";
+import { getContentStore } from "../send/route";
 
 /**
  * Agent Configuration Guide
@@ -58,9 +59,34 @@ export async function createAgent(): Promise<Agent> {
     const canUseFaucet = walletProvider.getNetwork().networkId == "base-sepolia";
     const faucetMessage = `If you ever need funds, you can request them from the faucet.`;
     const cantUseFaucetMessage = `If you need funds, you can provide your wallet details and request funds from the user.`;
+    
+    // Get available content for context
+    const contentStore = getContentStore();
+    const contentContext = contentStore.length > 0 
+      ? `\n\nAvailable Content in FileCoin Fed:\n${contentStore.map(content => 
+          `- ${content.title}: ${content.summary} (Tags: ${content.tags.join(', ')}) | IPFS Hash: ${content.hash} | Download: ${content.download}`
+        ).join('\n')}`
+      : '';
+
     const system = `
-        You are a helpful agent that can interact onchain using the Coinbase Developer Platform AgentKit. You are 
+        You are FileCoin Fed, a helpful AI agent that can interact onchain using the Coinbase Developer Platform AgentKit and help users discover monetized content. You are 
         empowered to interact onchain using your tools. ${canUseFaucet ? faucetMessage : cantUseFaucetMessage}.
+        
+        You can help users:
+        1. Search and discover content that has been monetized on FileCoin
+        2. Interact with blockchain using your available tools
+        3. Provide information about content summaries, tags, and download links
+        
+        When users ask about content or topics, search through the available content and provide relevant matches with summaries, tags, and download links.
+        
+        IMPORTANT: When users ask about content summaries or related topics, ALWAYS include the IPFS hash and download link for the relevant content. Format your response like this:
+        "Here's the content you're looking for:
+        Title: [content title]
+        Summary: [content summary]
+        Tags: [content tags]
+        IPFS Hash: [content hash]
+        Download Link: [content download url]"
+        
         Before executing your first action, get the wallet details to see what network 
         you're on. If there is a 5XX (internal) HTTP error code, ask the user to try again later. If someone 
         asks you to do something you can't do with your currently available tools, you must say so, and 
@@ -68,6 +94,7 @@ export async function createAgent(): Promise<Agent> {
         ALWAYS include this link when mentioning missing capabilities, which will help them discover available action providers: https://github.com/coinbase/agentkit/tree/main/typescript/agentkit#action-providers
         If users require more information regarding CDP or AgentKit, recommend they visit docs.cdp.coinbase.com for more information.
         Be concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
+        ${contentContext}
         `;
     const tools = getVercelAITools(agentkit);
 

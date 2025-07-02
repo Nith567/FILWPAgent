@@ -1,3 +1,43 @@
-export type AgentRequest = { userMessage: string };
+export interface AgentRequest {
+  userMessage: string;
+}
 
-export type AgentResponse = { response?: string; error?: string };
+export interface AgentResponse {
+  response?: string;
+  error?: string;
+}
+
+export interface UploadRequest {
+  content: string;
+  title?: string;
+  wallet_address: string;
+}
+
+export interface UploadResponse {
+  message: string;
+  summary: string;
+  tags: string[];
+  lighthouseHash: string;
+  download: string;
+  error?: string;
+}
+
+export interface ContentMetadata {
+  summary: string;
+  tags: string[];
+  hash: string;
+  download: string;
+  title: string;
+  wallet_address: string;
+  timestamp: string;
+}
+
+export interface SearchRequest {
+  q: string;
+}
+
+export interface SearchResponse {
+  results: ContentMetadata[];
+  total: number;
+  error?: string;
+}
