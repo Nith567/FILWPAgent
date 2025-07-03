@@ -12,10 +12,8 @@ import {
 import fs from "fs";
 import { createWalletClient, http } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-
 /**
  * AgentKit Integration Route
- *
  * This file is your gateway to integrating AgentKit with your product.
  * It defines the core capabilities of your agent through WalletProvider
  * and ActionProvider configuration.
@@ -91,15 +89,14 @@ export async function prepareAgentkitAndWalletProvider(): Promise<{
         },
         name: "Custom Chain",
         nativeCurrency: {
-          name: "Ether",
-          symbol: "ETH",
+          name: "Filecoin",
+          symbol: "FIL",
           decimals: 18,
         },
       },
       transport: http(),
     });
     const walletProvider = new ViemWalletProvider(client);
-
     // Initialize AgentKit: https://docs.cdp.coinbase.com/agentkit/docs/agent-actions
     const actionProviders: ActionProvider[] = [
       wethActionProvider(),
@@ -127,3 +124,5 @@ export async function prepareAgentkitAndWalletProvider(): Promise<{
     throw new Error("Failed to initialize agent");
   }
 }
+
+
