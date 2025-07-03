@@ -1,20 +1,18 @@
 import { NextResponse } from "next/server";
+import lighthouse from "@lighthouse-web3/sdk";
+import { privateKeyToAccount } from "viem/accounts";
+import { deployContract } from "../../../utils/deployContract";
 
 interface UploadRequest {
   content: string;
   title?: string;
   wallet_address: string;
+  amount: string;
 }
 
 interface AIResponse {
   summary: string;
   tags: string[];
-}
-
-interface LighthouseResponse {
-  data: {
-    Hash: string;
-  };
 }
 
 // In-memory storage for content metadata (in production, use a database)
@@ -25,6 +23,8 @@ const contentStore: Array<{
   download: string;
   title: string;
   wallet_address: string;
+  amount: string;
+  contractAddress: string;
   timestamp: string;
 }> = [
   // Sample content for testing
@@ -35,6 +35,8 @@ const contentStore: Array<{
     hash: "QmSampleWeb3Guide123456789",
     download: "https://gateway.lighthouse.storage/ipfs/QmSampleWeb3Guide123456789",
     wallet_address: "0x1234567890abcdef",
+    amount: "1",
+    contractAddress: "0xSampleContractAddress1",
     timestamp: new Date().toISOString()
   },
   {
@@ -44,6 +46,8 @@ const contentStore: Array<{
     hash: "QmFileCoinTutorial987654321",
     download: "https://gateway.lighthouse.storage/ipfs/QmFileCoinTutorial987654321",
     wallet_address: "0xabcdef1234567890",
+    amount: "2",
+    contractAddress: "0xSampleContractAddress2",
     timestamp: new Date().toISOString()
   },
   {
@@ -53,6 +57,8 @@ const contentStore: Array<{
     hash: "QmDeFiStrategies456789123",
     download: "https://gateway.lighthouse.storage/ipfs/QmDeFiStrategies456789123",
     wallet_address: "0x7890abcdef123456",
+    amount: "3",
+    contractAddress: "0xSampleContractAddress3",
     timestamp: new Date().toISOString()
   }
 ];
@@ -61,33 +67,47 @@ export async function POST(req: Request) {
   console.log("POST request received:", req.body);
   
   try {
-    const { content: blogContent, title, wallet_address } = await req.json() as UploadRequest;
+    const { content: blogContent, title, wallet_address, amount } = await req.json() as UploadRequest;
 
     if (!blogContent) {
       return NextResponse.json({ message: "Content is required." }, { status: 400 });
     }
-
+    if (!amount) {
+      return NextResponse.json({ message: "Amount is required." }, { status: 400 });
+    }
     if (!process.env.LIGHTHOUSE_API_KEY) {
       return NextResponse.json({ message: "Lighthouse API key not configured." }, { status: 500 });
     }
-
     if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json({ message: "Gemini API key not configured." }, { status: 500 });
     }
+    if (!process.env.PRIVATE_KEY) {
+      return NextResponse.json({ message: "Agent private key not configured." }, { status: 500 });
+    }
 
     console.log("Uploading content to Lighthouse...");
-    // For now, we'll simulate the Lighthouse upload since the package might not be available
-    // In production, you'd use the actual lighthouse-web3 package
-    const lighthouseResponse: LighthouseResponse = {
-      data: {
-        Hash: `Qm${Math.random().toString(36).substring(2, 15)}`
-      }
-    };
+    // Using @lighthouse-web3/sdk for text upload
+    const lighthouseResponse = await lighthouse.uploadText(
+      blogContent,
+      process.env.LIGHTHOUSE_API_KEY,
+      wallet_address
+    );
     console.log("Lighthouse response:", lighthouseResponse);
 
     console.log("Generating summary with AI...");
     const hash = lighthouseResponse.data.Hash;
-    const { summary, tags } = await getSummariesFromAI(blogContent);
+    const fetchResponse = await fetch(
+      `https://gateway.lighthouse.storage/ipfs/${hash}`
+    );
+    const text = await fetchResponse.text();
+    console.log("Blog Content:", text);
+    const { summary, tags } = await getSummariesFromAI(text);
+
+   // Initialize WalletProvider from agentkit: https://docs.cdp.coinbase.com/agentkit/docs/wallet-management
+
+    const agentAccount = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`);
+    const contractAddress = await deployContract(hash, amount, agentAccount);
+    console.log("Deployed contract address:", contractAddress);
 
     // Store the content metadata (in a real app, you'd use a database)
     const contentMetadata = {
@@ -97,20 +117,26 @@ export async function POST(req: Request) {
       download: `https://gateway.lighthouse.storage/ipfs/${hash}`,
       title: title || "Untitled",
       wallet_address,
+      amount,
+      contractAddress: contractAddress || "",
       timestamp: new Date().toISOString()
     };
 
+    console.log("Content summary:", summary);
+    console.log("Content tags:", tags);
     contentStore.push(contentMetadata);
+    console.log("Content store updated, total items:", contentStore.length);
 
     return NextResponse.json({
-      message: "Content monetized and tool created successfully!",
+      message: "Content monetized successfully!",
       summary,
       tags,
       lighthouseHash: lighthouseResponse.data.Hash,
-      download: `https://gateway.lighthouse.storage/ipfs/${hash}`
+      download: `https://gateway.lighthouse.storage/ipfs/${hash}`,
+      contractAddress
     });
   } catch (error) {
-    console.error("Error in /api/upload:", error);
+    console.error("Error in /api/send:", error);
     return NextResponse.json({
       message: "An internal server error occurred.",
       error: error instanceof Error ? error.message : "Unknown error"
