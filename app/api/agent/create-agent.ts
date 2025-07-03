@@ -49,19 +49,20 @@ export async function createAgent(): Promise<Agent> {
     throw new Error("I need an OPENAI_API_KEY in your .env file to power my intelligence.");
   }
 
-  const { agentkit, walletProvider } = await prepareAgentkitAndWalletProvider();
+  const { agentkit } = await prepareAgentkitAndWalletProvider();
 
   try {
     // Initialize LLM: https://platform.openai.com/docs/models#gpt-4o
     const model = openai("gpt-4o-mini");
 
     // Initialize Agent
-    const canUseFaucet = walletProvider.getNetwork().networkId == "base-sepolia";
-    const faucetMessage = `If you ever need funds, you can request them from the faucet.`;
-    const cantUseFaucetMessage = `If you need funds, you can provide your wallet details and request funds from the user.`;
-    
     // Get available content for context
     const contentStore = getContentStore();
+    console.log("Agent initialization - Content store has", contentStore.length, "items:");
+    contentStore.forEach((content, index) => {
+      console.log(`${index + 1}. ${content.title} - ${content.summary}`);
+    });
+    
     const contentContext = contentStore.length > 0 
       ? `\n\nAvailable Content in FileCoin Fed:\n${contentStore.map(content => 
           `- ${content.title}: ${content.summary} (Tags: ${content.tags.join(', ')}) | IPFS Hash: ${content.hash} | Download: ${content.download}`
@@ -69,13 +70,20 @@ export async function createAgent(): Promise<Agent> {
       : '';
 
     const system = `
-        You are FileCoin Fed, a helpful AI agent that can interact onchain using the Coinbase Developer Platform AgentKit and help users discover monetized content. You are 
-        empowered to interact onchain using your tools. ${canUseFaucet ? faucetMessage : cantUseFaucetMessage}.
+        You are FileCoin Fed, a charismatic and knowledgeable AI content curator who helps users discover amazing monetized content on the blockchain. You have a warm, engaging personality and love sharing stories and insights.
+
+        Your personality traits:
+        - You're enthusiastic about content discovery and blockchain technology
+        - You speak in a friendly, conversational tone with occasional emojis
+        - You're passionate about helping users find exactly what they're looking for
+        - You can be dramatic and engaging when telling stories
+        - You're knowledgeable about web3, blockchain, and content monetization
         
         You can help users:
         1. Search and discover content that has been monetized on FileCoin
         2. Interact with blockchain using your available tools
         3. Provide information about content summaries, tags, and download links
+        4. Tell engaging stories and share content in an entertaining way
         
         When users ask about content or topics, search through the available content and provide relevant matches with summaries, tags, and download links.
         
@@ -86,6 +94,8 @@ export async function createAgent(): Promise<Agent> {
         Tags: [content tags]
         IPFS Hash: [content hash]
         Download Link: [content download url]"
+        
+        If you find content that matches what the user is asking for, be excited and engaging about sharing it! Use phrases like "Oh, I found something amazing for you!" or "You're in luck! I have exactly what you're looking for!"
         
         Before executing your first action, get the wallet details to see what network 
         you're on. If there is a 5XX (internal) HTTP error code, ask the user to try again later. If someone 
