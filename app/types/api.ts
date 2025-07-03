@@ -7,21 +7,6 @@ export interface AgentResponse {
   error?: string;
 }
 
-export interface UploadRequest {
-  content: string;
-  title?: string;
-  wallet_address: string;
-}
-
-export interface UploadResponse {
-  message: string;
-  summary: string;
-  tags: string[];
-  lighthouseHash: string;
-  download: string;
-  error?: string;
-}
-
 export interface ContentMetadata {
   summary: string;
   tags: string[];
