@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { useAccount } from "wagmi";
 import { useContract } from "./hooks/useContract";
+import { ConnectWalletButton } from "../component/ConnectWalletButton";
 
 interface ContentResult {
   summary: string;
@@ -18,7 +19,7 @@ interface ContentResult {
 }
 
 /**
- * FileCoin Fed - Content Monetization Platform
+ * FILWPAgent - Content Monetization Platform
  *
  * @returns {React.ReactNode} The home page
  */
@@ -128,27 +129,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white">
-      {/* Header */}
-      <div className="bg-black/20 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-xl font-bold">F3</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  FILWPAgent
-                </h1>
-                <p className="text-sm text-gray-300">Filecoin WordPress Content Monetization</p>
-              </div>
-            </div>
-            <div className="text-sm text-gray-300">
-              WordPress Content Discovery & Purchase
-            </div>
-          </div>
-        </div>
-      </div>
+      <ConnectWalletButton />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
