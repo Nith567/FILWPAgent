@@ -1,67 +1,46 @@
-# Onchain Agent Powered by AgentKit
+# FILWPAgent: Fair AI Training Economy for WordPress & Forums
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with `create-onchain-agent`.  
+## Problem
+WordPress powers approximately 43–44% of all websites worldwide as of mid-2025,in the CMS market, WordPress holds a dominant 61–63% share. AI companies are scraping content from WordPress for free. At the same time, AI systems cannot prove they are using content legally or compensating creators.
 
-It integrates [AgentKit](https://github.com/coinbase/agentkit) to provide AI-driven interactions with on-chain capabilities.
+## Idea
+FILWPAgent is a plugin/service that transforms your WordPress site or forum into an AI-accessible API with automatic compensation and immutable audit records using filecoin network storage. This enables a fair, transparent, and decentralized content economy for the AI era.
 
-## Getting Started
+## How It Works
+1. **WordPress Plugin for Creators:**
+   - Site owners install our plugin and set their wallet address and desired payment amount(*USDFC stablecoin*) for each blog post and click on monitize Button in dashboard.
+   - The plugin submits blog metadata (title, summary, tags, wallet, amount, etc.) to our FILWPAgent
 
-First, install dependencies:
+2. **Decentralized Content Registry:**
+   - FILWPAgent inserts the content metadata into a Tableland decentralized database (onchain SQLite table) and deploy smart Contract
+   - This creates an immutable, auditable record of all content available for AI access.
 
-```sh
-npm install
-```
+3. **User Platform & Payment:**
+   - Users visit our platform and search for topics.
+   - If relevant content is found in Tableland Database via sql query operations without using centralized database, users can pay the creator's specified amount (in USDFC) for purchasing Content
+    Filecoin network stablecoin) calls to smart contract on filecoin Network to access the full content and happily receive content.
+   - Payment and access are handled onchain, ensuring transparency and fair compensation.
 
-Then, configure your environment variables:
-
-```sh
-mv .env.local .env
-```
-
-Run the development server:
-
-```sh
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the project.
-
-
-## Configuring Your Agent
-
-You can [modify your configuration](https://github.com/coinbase/agentkit/tree/main/typescript/agentkit#usage) of the agent. By default, your agentkit configuration occurs in the `/api/agent/prepare-agentkit.ts` file, and agent instantiation occurs in the `/api/agent/create-agent.ts` file.
-
-### 1. Select Your LLM  
-Modify the OpenAI model instantiation to use the model of your choice.
-
-### 2. Select Your Wallet Provider  
-AgentKit requires a **Wallet Provider** to interact with blockchain networks.
-
-### 3. Select Your Action Providers  
-Action Providers define what your agent can do. You can use built-in providers or create your own.
+## Future Plans
+- Our WordPress plugin is currently in the approval queue (position #422) on the official WordPress plugin directory.
+- We plan to launch on Filecoin mainnet soon, bringing decentralized, fair content monetization to a global audience.
 
 ---
 
-## Next Steps
-
-- Explore the AgentKit README: [AgentKit Documentation](https://github.com/coinbase/agentkit)
-- Learn more about available Wallet Providers & Action Providers.
-- Experiment with custom Action Providers for your specific use case.
+**FILWPAgent: Empowering creators, enabling fair AI, and building the future of the web content economy.**
 
 ---
 
-## Learn More
+## Gallery
 
-- [Learn more about CDP](https://docs.cdp.coinbase.com/)
-- [Learn more about AgentKit](https://docs.cdp.coinbase.com/agentkit/docs/welcome)
-- [Learn more about Next.js](https://nextjs.org/docs)
-- [Learn more about Tailwind CSS](https://tailwindcss.com/docs)
+### Agent SQL Query Example
+![Agent SQL Query Example](./gallery/agentSQL.png)
 
----
+### Tableland SQLite Dashboard
+![Tableland SQLite Dashboard](./gallery/sqlLitedashboard.png)
 
-## Contributing
+### FILWPAgent Tableland Integration
+![FILWPAgent Tableland Integration](./gallery/filtableland.png)
 
-Interested in contributing to AgentKit? Follow the contribution guide:
-
-- [Contribution Guide](https://github.com/coinbase/agentkit/blob/main/CONTRIBUTING.md)
-- Join the discussion on [Discord](https://discord.gg/CDP)
+###PLUGIN REVIEW UNDER WORDPRESS 
+![WORDPRESS PLUGIN REVIEW](./gallery/image.png)
