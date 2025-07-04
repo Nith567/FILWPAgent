@@ -1,14 +1,23 @@
-# FILWPAgent: Fair AI Training Economy for WordPress & Forums
+# FILWPAgent: Fair AI Training Economy for WordPress
 
 ## Problem
 WordPress powers approximately 43–44% of all websites worldwide as of mid-2025,in the CMS market, WordPress holds a dominant 61–63% share. AI companies are scraping content from WordPress for free. At the same time, AI systems cannot prove they are using content legally or compensating creators.
 
 ## Idea
-FILWPAgent is a plugin/service that transforms your WordPress site or forum into an AI-accessible API with automatic compensation and immutable audit records using filecoin network storage. This enables a fair, transparent, and decentralized content economy for the AI era.
+
+FILWPAgent is a plugin+AiAgentServiece that transforms your WordPress site into immutable record log with filecoin Network Storage and enables a fair, transparent, and decentralized content economy for the AI era.
+
+
+NOTE: At present our Wordpress plugin is under review so we cloned wordpress locally and uploaded plugin via zip file..
+> **NOTE:** Our WordPress plugin is currently **under review**.  
+> In the meantime, we have cloned WordPress locally and uploaded the plugin manually via a zip file.
+Checkout our - [Plugin Repo](https://github.com/Mano-08/wallet-payment-gaurd)
+
 
 ## How It Works
+
 1. **WordPress Plugin for Creators:**
-   - Site owners install our plugin and set their wallet address and desired payment amount(*USDFC stablecoin*) for each blog post and click on monitize Button in dashboard.
+   - WordPress owners install our plugin and set their wallet address and desired payment amount(*USDFC stablecoin*) for each blog post and click on monitize Button in dashboard.
    - The plugin submits blog metadata (title, summary, tags, wallet, amount, etc.) to our FILWPAgent
 
 2. **Decentralized Content Registry:**
@@ -23,6 +32,10 @@ FILWPAgent is a plugin/service that transforms your WordPress site or forum into
 
 ## Future Plans
 - Our WordPress plugin is currently in the approval queue (position #422) on the official WordPress plugin directory.
+
+### PLUGIN REVIEW UNDER WORDPRESS 
+![WORDPRESS PLUGIN REVIEW](./gallery/image.png)
+
 - We plan to launch on Filecoin mainnet soon, bringing decentralized, fair content monetization to a global audience.
 
 ---
@@ -42,5 +55,3 @@ FILWPAgent is a plugin/service that transforms your WordPress site or forum into
 ### FILWPAgent Tableland Integration
 ![FILWPAgent Tableland Integration](./gallery/filtableland.png)
 
-###PLUGIN REVIEW UNDER WORDPRESS 
-![WORDPRESS PLUGIN REVIEW](./gallery/image.png)
