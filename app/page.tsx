@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { useAccount } from "wagmi";
+import { useContract } from "./hooks/useContract";
+
 interface ContentResult {
   summary: string;
   tags: string; // JSON string
@@ -29,6 +31,36 @@ export default function Home() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const account = useAccount();
+
+  // Automatically trigger claimAccessContent for the top result
+  useEffect(() => {
+    if (
+      searchResults.length > 0 &&
+      account.address &&
+      searchResults[0].contractAddress &&
+      searchResults[0].amount
+    ) {
+      claimAccessContent(
+        account.address
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchResults, account.address]);
+
+  // Use the contract hook for the top result
+  const {
+    claimAccessContent,
+    isApprovePending,
+    isApprovalConfirming,
+    isApprovalConfirmed,
+    isPurchasePending,
+    isPurchaseConfirming,
+    isPurchaseConfirmed,
+    error,
+  } = useContract(
+    searchResults[0]?.contractAddress || "",
+    searchResults[0]?.amount || "0"
+  );
 
   // Function to scroll to the bottom
   const scrollToBottom = () => {
@@ -152,6 +184,16 @@ export default function Home() {
               {searchResults.length > 0 && (
                 <div className="mt-4">
                   <h3 className="text-lg font-bold mb-2">Search Results</h3>
+                  {/* Show transaction status */}
+                  <div className="mb-4">
+                    {isApprovePending && <div>Approving token transfer...</div>}
+                    {isApprovalConfirming && <div>Waiting for approval confirmation...</div>}
+                    {isApprovalConfirmed && !isPurchaseConfirmed && <div>Approval confirmed. Purchasing access...</div>}
+                    {isPurchasePending && <div>Purchasing access...</div>}
+                    {isPurchaseConfirming && <div>Waiting for purchase confirmation...</div>}
+                    {isPurchaseConfirmed && <div>Access purchased! Showing content below.</div>}
+                    {error && <div className="text-red-400">{error}</div>}
+                  </div>
                   {searchResults.map((content, idx) => (
                     <div key={idx} className="p-4 mb-4 bg-white/10 rounded-xl">
                       <div><strong>Title:</strong> {content.title}</div>
