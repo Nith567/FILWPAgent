@@ -3,7 +3,7 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { erc20Abi } from "viem";
+import { erc20Abi, parseEther } from 'viem';
 import { FilFedContract } from "@/contract/abi";
 
 const USDFC_TOKEN_ADDRESS = "0xb3042734b608a1B16e9e86B374A3f3e389B4cDf0";
@@ -36,7 +36,7 @@ export const useContract = (contractAddress: string, amount: string) => {
         address: USDFC_TOKEN_ADDRESS,
         abi: erc20Abi,
         functionName: "approve",
-        args: [contractAddress as `0x${string}`, BigInt(amount)],
+        args: [contractAddress as `0x${string}`, parseEther(amount) as bigint],
         account: userAccount as `0x${string}`,
       });
       setApprovalTx(txHash);
