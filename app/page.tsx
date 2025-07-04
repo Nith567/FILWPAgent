@@ -219,10 +219,12 @@ export default function Home() {
                           <span className="ml-2 text-gray-400">No download link</span>
                         )}
                       </div>
-                      <div className="mt-4 p-4 bg-white/10 rounded-lg">
-                        <strong className="text-green-300 block mb-2">Content:</strong>
-                        <ReactMarkdown>{contentMap[content.hash] || "Loading..."}</ReactMarkdown>
-                      </div>
+                      {isPurchaseConfirmed && (
+                        <div className="mt-4 p-4 bg-white/10 rounded-lg">
+                          <strong className="text-green-300 block mb-2">Content:</strong>
+                          <ReactMarkdown>{contentMap[content.hash] || "Loading..."}</ReactMarkdown>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
