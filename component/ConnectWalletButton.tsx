@@ -30,9 +30,9 @@ export function ConnectWalletButton() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.3 }}
-        className="flex items-center gap-4"
+        className="flex items-center gap-4 ml-8"
       >
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-4">
           <ConnectButton />
         </motion.div>
       </motion.div>

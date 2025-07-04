@@ -153,15 +153,14 @@ export default function Home() {
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Welcome to FILWPAgent</h3>
                   <p className="text-gray-300 mb-4">
-                    Ask me about WordPress content, blockchain interactions, or search for monetized content!
+                    Ask me about WordPress content or search for monetized content!
                   </p>
                   <div className="space-y-2 text-sm text-gray-400">
-                    <p>💡 Try: &quot;Find filecoin storage content&quot;</p>
+                    <p>💡 Try: &quot;Filecoin storage content&quot;</p>
                   </div>
                 </div>
               )}
 
-              {/* Search Results - Show all fields and content immediately */}
               {searchResults.length > 0 && (
                 <div className="mt-4">
                   <h3 className="text-lg font-bold mb-2">Search Results</h3>
