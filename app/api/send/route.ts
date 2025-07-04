@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import lighthouse from "@lighthouse-web3/sdk";
 import { privateKeyToAccount } from "viem/accounts";
 import { deployContract } from "../../../utils/deployContract";
+import { insertData, FilwpAgentRow } from '../../../utils/tableLand';
 
 interface UploadRequest {
   content: string;
@@ -15,53 +16,6 @@ interface AIResponse {
   tags: string[];
 }
 
-// In-memory storage for content metadata (in production, use a database)
-const contentStore: Array<{
-  summary: string;
-  tags: string[];
-  hash: string;
-  download: string;
-  title: string;
-  wallet_address: string;
-  amount: string;
-  contractAddress: string;
-  timestamp: string;
-}> = [
-  // Sample content for testing
-  {
-    title: "Web3 Development Guide",
-    summary: "A comprehensive guide to building decentralized applications with modern web3 technologies",
-    tags: ["web3", "development", "blockchain", "dapps"],
-    hash: "QmSampleWeb3Guide123456789",
-    download: "https://gateway.lighthouse.storage/ipfs/QmSampleWeb3Guide123456789",
-    wallet_address: "0x1234567890abcdef",
-    amount: "1",
-    contractAddress: "0xSampleContractAddress1",
-    timestamp: new Date().toISOString()
-  },
-  {
-    title: "FileCoin Storage Tutorial",
-    summary: "Learn how to use FileCoin for decentralized storage and content monetization",
-    tags: ["filecoin", "storage", "monetization", "ipfs"],
-    hash: "QmFileCoinTutorial987654321",
-    download: "https://gateway.lighthouse.storage/ipfs/QmFileCoinTutorial987654321",
-    wallet_address: "0xabcdef1234567890",
-    amount: "2",
-    contractAddress: "0xSampleContractAddress2",
-    timestamp: new Date().toISOString()
-  },
-  {
-    title: "DeFi Yield Farming Strategies",
-    summary: "Advanced strategies for yield farming and liquidity provision in DeFi protocols",
-    tags: ["defi", "yield-farming", "liquidity", "cryptocurrency"],
-    hash: "QmDeFiStrategies456789123",
-    download: "https://gateway.lighthouse.storage/ipfs/QmDeFiStrategies456789123",
-    wallet_address: "0x7890abcdef123456",
-    amount: "3",
-    contractAddress: "0xSampleContractAddress3",
-    timestamp: new Date().toISOString()
-  }
-];
 
 export async function POST(req: Request) {
   console.log("POST request received:", req.body);
@@ -100,7 +54,6 @@ export async function POST(req: Request) {
       `https://gateway.lighthouse.storage/ipfs/${hash}`
     );
     const text = await fetchResponse.text();
-    console.log("Blog Content:", text);
     const { summary, tags } = await getSummariesFromAI(text);
 
    // Initialize WalletProvider from agentkit: https://docs.cdp.coinbase.com/agentkit/docs/wallet-management
@@ -109,10 +62,9 @@ export async function POST(req: Request) {
     const contractAddress = await deployContract(hash, amount, agentAccount);
     console.log("Deployed contract address:", contractAddress);
 
-    // Store the content metadata (in a real app, you'd use a database)
-    const contentMetadata = {
+    const contentMetadata: FilwpAgentRow = {
       summary,
-      tags,
+      tags: JSON.stringify(tags),
       hash,
       download: `https://gateway.lighthouse.storage/ipfs/${hash}`,
       title: title || "Untitled",
@@ -122,10 +74,12 @@ export async function POST(req: Request) {
       timestamp: new Date().toISOString()
     };
 
+    // Insert into Tableland instead of contentStore.push
+    await insertData(contentMetadata);
+    console.log("Inserted content into Tableland");
+
     console.log("Content summary:", summary);
     console.log("Content tags:", tags);
-    contentStore.push(contentMetadata);
-    console.log("Content store updated, total items:", contentStore.length);
 
     return NextResponse.json({
       message: "Content monetized successfully!",
@@ -144,10 +98,6 @@ export async function POST(req: Request) {
   }
 }
 
-// Export function to get content store for the agent
-export function getContentStore() {
-  return contentStore;
-}
 
 async function getSummariesFromAI(blogContent: string): Promise<AIResponse> {
   const prompt = `Analyze the following text and generate a summary and relevant tags. Provide your response as a single, valid JSON object with two keys: "summary" (a concise one-sentence summary of the text) and "tags" (an array of relevant tags like ["web3", "monetization", "filecoin"]).
@@ -198,4 +148,4 @@ ${blogContent}
       tags: ["general"]
     };
   }
-} 
+}
