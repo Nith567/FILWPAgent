@@ -1,6 +1,6 @@
 import { FilFedContract } from "../contract/abi";
 import { publicClient } from "../lib/client";
-import { Account } from "viem";
+import { Account} from "viem";
 import { walletClient } from "../lib/client";
 
 export async function deployContract( cid:string,amount:string,account:Account) {
