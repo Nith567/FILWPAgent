@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "../providers/Providers";
+import { Navbar } from "../component/Navbar";
 
 /**
  * Metadata for the page
@@ -24,8 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-100 dark:bg-gray-900 dark flex flex-col min-h-screen">
-        {/* Main Content */}
-        <main className="flex-grow">{children}</main>
+        <Providers>
+          <Navbar />
+          <main className="flex-grow">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );

@@ -1,8 +1,19 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useAgent } from "./hooks/useAgent";
 import ReactMarkdown from "react-markdown";
+import { useAccount } from "wagmi";
+interface ContentResult {
+  summary: string;
+  tags: string; // JSON string
+  hash: string;
+  download: string;
+  title: string;
+  wallet_address: string;
+  amount: string;
+  contractAddress: string;
+  timestamp: string;
+}
 
 /**
  * FileCoin Fed - Content Monetization Platform
@@ -11,27 +22,77 @@ import ReactMarkdown from "react-markdown";
  */
 export default function Home() {
   const [input, setInput] = useState("");
-  const { messages, sendMessage, isThinking } = useAgent();
-
-  // Ref for the messages container
+  const [searchResults, setSearchResults] = useState<ContentResult[]>([]);
+  const [contentMap, setContentMap] = useState<Record<string, string>>({}); // hash -> content
+  const [isThinking, setIsThinking] = useState(false);
+  const [messages, setMessages] = useState<string[]>([]); // Store user messages
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const account = useAccount();
 
   // Function to scroll to the bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Auto-scroll whenever messages change
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [searchResults, contentMap, messages]);
+
+  async function searchContent(query: string) {
+    const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.results || [];
+  }
+
+  // Fetch content from IPFS for all search results
+  async function fetchAllContents(results: ContentResult[]) {
+    const newContentMap: Record<string, string> = {};
+    await Promise.all(
+      results.map(async (content) => {
+        if (content.download) {
+          try {
+            const res = await fetch(content.download);
+            const text = await res.text();
+            newContentMap[content.hash] = text;
+          } catch {
+            newContentMap[content.hash] = "Failed to fetch content.";
+          }
+        } else {
+          newContentMap[content.hash] = "No download link.";
+        }
+      })
+    );
+    setContentMap(newContentMap);
+  }
 
   const onSendMessage = async () => {
     if (!input.trim() || isThinking) return;
-    const message = input;
+    setIsThinking(true);
+    setSearchResults([]);
+    setContentMap({});
+    setMessages((prev) => [...prev, input]); // Add user message
+    const results = await searchContent(input);
+    setIsThinking(false);
+    setSearchResults(results);
+    if (results.length > 0) {
+      fetchAllContents(results);
+    }
     setInput("");
-    await sendMessage(message);
   };
+
+  // Helper to render tags safely
+  function renderTags(tags: unknown) {
+    if (Array.isArray(tags)) return tags.join(", ");
+    try {
+      const parsed = JSON.parse(tags as string);
+      if (Array.isArray(parsed)) return parsed.join(", ");
+      return String(parsed);
+    } catch {
+      return String(tags);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white">
@@ -45,13 +106,13 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  FileCoin Fed
+                  FILWPAgent
                 </h1>
-                <p className="text-sm text-gray-300">Decentralized Content Monetization</p>
+                <p className="text-sm text-gray-300">Filecoin WordPress Content Monetization</p>
               </div>
             </div>
             <div className="text-sm text-gray-300">
-              AI-Powered Content Discovery
+              WordPress Content Discovery & Purchase
             </div>
           </div>
         </div>
@@ -61,60 +122,68 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 shadow-2xl">
-            {/* Chat Messages */}
+            {/* Chat/Search Messages */}
             <div className="h-[70vh] overflow-y-auto p-6 space-y-4">
-              {messages.length === 0 ? (
+              {/* Show user messages as chat bubbles */}
+              {messages.map((msg, idx) => (
+                <div key={idx} className="flex justify-end">
+                  <div className="max-w-[80%] p-4 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                    {msg}
+                  </div>
+                </div>
+              ))}
+
+              {searchResults.length === 0 && !isThinking && (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
                     <span className="text-2xl">🤖</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Welcome to FileCoin Fed</h3>
+                  <h3 className="text-xl font-semibold mb-2">Welcome to FILWPAgent</h3>
                   <p className="text-gray-300 mb-4">
-                    Ask me about content, blockchain interactions, or search for monetized content!
+                    Ask me about WordPress content, blockchain interactions, or search for monetized content!
                   </p>
                   <div className="space-y-2 text-sm text-gray-400">
-                    <p>💡 Try: &quot;Search for web3 content&quot;</p>
-                    <p>💡 Try: &quot;Show me monetized tutorials&quot;</p>
-                    <p>💡 Try: &quot;What blockchain tools are available?&quot;</p>
                     <p>💡 Try: &quot;Find filecoin storage content&quot;</p>
                   </div>
                 </div>
-              ) : (
-                messages.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-                  >
-                    <div
-                      className={`max-w-[80%] p-4 rounded-2xl ${
-                        msg.sender === "user"
-                          ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                          : "bg-white/10 backdrop-blur-sm border border-white/20"
-                      }`}
-                    >
-                      <ReactMarkdown
-                        components={{
-                          a: props => (
-                            <a
-                              {...props}
-                              className="text-blue-300 underline hover:text-blue-200"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            />
-                          ),
-                          code: props => (
-                            <code
-                              {...props}
-                              className="bg-black/30 px-2 py-1 rounded text-sm"
-                            />
-                          ),
-                        }}
-                      >
-                        {msg.text}
-                      </ReactMarkdown>
+              )}
+
+              {/* Search Results - Show all fields and content immediately */}
+              {searchResults.length > 0 && (
+                <div className="mt-4">
+                  <h3 className="text-lg font-bold mb-2">Search Results</h3>
+                  {searchResults.map((content, idx) => (
+                    <div key={idx} className="p-4 mb-4 bg-white/10 rounded-xl">
+                      <div><strong>Title:</strong> {content.title}</div>
+                      <div><strong>Summary:</strong> {content.summary}</div>
+                      <div><strong>Tags:</strong> {renderTags(content.tags)}</div>
+                      <div><strong>Amount:</strong> {content.amount} USDFC</div>
+                      <div><strong>IPFS Hash:</strong> <span className="break-all text-sm">{content.hash}</span></div>
+                      <div><strong>Contract Address:</strong> <span className="break-all text-sm">{content.contractAddress}</span></div>
+                      <div><strong>Wallet Address:</strong> <span className="break-all text-sm">{content.wallet_address}</span></div>
+                      <div><strong>Timestamp:</strong> {content.timestamp}</div>
+                      <div>
+                        <strong>Download Link:</strong>
+                        {content.download ? (
+                          <a
+                            href={content.download}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-300 underline hover:text-blue-200 ml-2"
+                          >
+                            View Content
+                          </a>
+                        ) : (
+                          <span className="ml-2 text-gray-400">No download link</span>
+                        )}
+                      </div>
+                      <div className="mt-4 p-4 bg-white/10 rounded-lg">
+                        <strong className="text-green-300 block mb-2">Content:</strong>
+                        <ReactMarkdown>{contentMap[content.hash] || "Loading..."}</ReactMarkdown>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
 
               {/* Thinking Indicator */}
