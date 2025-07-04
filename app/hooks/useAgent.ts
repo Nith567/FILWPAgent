@@ -51,7 +51,7 @@ export function useAgent() {
    * @param {string} input - The message from the user.
    */
   const sendMessage = async (input: string) => {
-    if (!input.trim()) return;
+    if (!input.trim()) return null;
 
     setMessages(prev => [...prev, { text: input, sender: "user" }]);
     setIsThinking(true);
@@ -63,6 +63,7 @@ export function useAgent() {
     }
 
     setIsThinking(false);
+    return responseMessage;
   };
 
   return { 
