@@ -28,7 +28,7 @@ async function messageAgent(userMessage: string): Promise<string | null> {
 }
 
 /**
- * This hook manages interactions with the AI agent for FileCoin Fed content discovery.
+ * This hook manages interactions with the AI agent for FILWPAgent content discovery.
  * It handles chat messages and provides access to the AI agent's responses.
  *
  * #### How It Works

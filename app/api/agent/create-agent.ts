@@ -64,13 +64,13 @@ export async function createAgent(): Promise<Agent> {
     });
     
     const contentContext = contentStore.length > 0 
-      ? `\n\nAvailable Content in FileCoin Fed:\n${contentStore.map(content => 
+      ? `\n\nAvailable Content in FILWPAgent:\n${contentStore.map(content => 
           `- ${content.title}: ${content.summary} (Tags: ${content.tags.join(', ')}) | IPFS Hash: ${content.hash} | Download: ${content.download} | Contract Address: ${content.contractAddress} | Amount: ${content.amount}`
         ).join('\n')}`
       : '';
 
     const system = `
-        You are FILWPAgent (Filecoin WordPress Agent), a specialized AI assistant for the FileCoin Fed content monetization platform. You help users discover and purchase monetized content from WordPress blogs that have been uploaded to FileCoin.
+        You are FILWPAgent (Filecoin WordPress Agent), a specialized AI assistant for the FILWPAgent content monetization platform. You help users discover and purchase monetized content from WordPress blogs that have been uploaded to FileCoin.
 
         Your personality traits:
         - You're enthusiastic about helping users find the exact content they need
