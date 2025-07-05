@@ -5,13 +5,13 @@ WordPress powers approximately 43–44% of all websites worldwide as of mid-2025
 
 ## Idea
 
-FILWPAgent is a plugin+AiAgentServiece that transforms your WordPress site into immutable record log with filecoin Network Storage and enables a fair, transparent, and decentralized content economy for the AI era.
+FILWPAgent is a plugin+AiAgentServiece that transforms your WordPress site into immutable record log with Filecoin Network Storage and enables a fair, transparent, and decentralized content economy for the AI era.
 
 
 
 > **NOTE:** Our WordPress plugin submitted is currently **under review**.  
 > In the meantime,we cloned Wordpress, running locally through apache server and uploaded plugin via zip file.
-Checkout our - [Plugin Repo](https://github.com/Mano-08/wallet-payment-gaurd)
+Checkout our - [Plugin Repo](https://github.com/Mano-08/content-monetizer)
 
 
 ## How It Works
@@ -26,7 +26,7 @@ Checkout our - [Plugin Repo](https://github.com/Mano-08/wallet-payment-gaurd)
 
 3. **User Platform & Payment:**
    - Users visit our platform and search for topics.
-   - If relevant content is found in Tableland Database via sql query operations without using centralized database, users can pay the creator's specified amount (in USDFC) for consuming Content
+   - If relevant content is found in Tableland Database via onChain SQL AI operated engine search without using centralized database, users can pay the creator's specified amount (in USDFC) for consuming Content
    - After calls to smart contract on Filecoin Network to access the full content and happily receive the content according to user query.
    - Payment and access are handled onChain with smart contracts, ensuring transparency.
 
@@ -45,12 +45,15 @@ Checkout our - [Plugin Repo](https://github.com/Mano-08/wallet-payment-gaurd)
 
 ---
 
+## Project Slides
+📊 [View Project Presentation](https://www.canva.com/design/DAGsR6-Rx5k/mlyC31fhzirv8Cc1rZn_4A/edit)
+
+---
+
 ## Gallery
 
-### Agent SQL Query Example
-![Agent SQL Query Example](./gallery/agentSQL.png)
 
-### Tableland SQLite Dashboard
+### Agent Tableland LOGS  Dashboard
 ![Tableland SQLite Dashboard](./gallery/sqlLitedashboard.png)
 
 ### Plugin Under Review
