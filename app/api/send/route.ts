@@ -45,21 +45,6 @@ const pinataResponse = await pinata.upload.private.file(file);
 const hash=pinataResponse?.cid;
 console.log("Pinata response:", pinataResponse);
 
-    // console.log("Uploading content to Lighthouse...");
-    // // Using @lighthouse-web3/sdk for text upload
-    // const lighthouseResponse = await lighthouse.uploadText(
-    //   blogContent,
-    //   process.env.LIGHTHOUSE_API_KEY,
-    //   wallet_address
-    // );
-    // console.log("Lighthouse response:", lighthouseResponse);
-
-    // console.log("Generating summary with AI...");
-    // const hash = lighthouseResponse.data.Hash;
-    // const fetchResponse = await fetch(
-    //   `https://gateway.lighthouse.storage/ipfs/${hash}`
-    // );
-    // const text = await fetchResponse.text();
 
     const { data } = await pinata.gateways.private.get(hash);
     const text = typeof data === "string" ? data : "";
