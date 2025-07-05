@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import { useContract } from "./hooks/useContract";
 import { ConnectWalletButton } from "../component/ConnectWalletButton";
 
+
 interface ContentResult {
   summary: string;
   tags: string; // JSON string
@@ -63,7 +64,7 @@ export default function Home() {
     searchResults[0]?.amount || "0"
   );
 
-  // Function to scroll to the bottom
+  // Function to scroll to the bottomJ
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -78,27 +79,37 @@ export default function Home() {
     const data = await res.json();
     return data.results || [];
   }
-
-  // Fetch content from IPFS for all search results
   async function fetchAllContents(results: ContentResult[]) {
     const newContentMap: Record<string, string> = {};
+  
     await Promise.all(
       results.map(async (content) => {
-        if (content.download) {
-          try {
-            const res = await fetch(content.download);
-            const text = await res.text();
-            newContentMap[content.hash] = text;
-          } catch {
-            newContentMap[content.hash] = "Failed to fetch content.";
+        try {
+          const response = await fetch('/api/fetch-content', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ hash: content.hash })
+          });
+  
+          if (response.ok) {
+            const data = await response.json();
+            newContentMap[content.hash] = data.content;
+            console.log('✅ fetched content:', data.content);
+          } else {
+            newContentMap[content.hash] = "❌ Failed to fetch content.";
           }
-        } else {
-          newContentMap[content.hash] = "No download link.";
+        } catch (err) {
+          console.error("💥 Error fetching:", err);
+          newContentMap[content.hash] = "❌ Error occurred while fetching content.";
         }
       })
     );
+  
     setContentMap(newContentMap);
   }
+  
 
   const onSendMessage = async () => {
     if (!input.trim() || isThinking) return;
@@ -249,6 +260,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );
