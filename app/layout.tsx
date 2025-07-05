@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "../providers/Providers";
-import { Navbar } from "../component/ConnectWalletButton";
 
 /**
  * Metadata for the page
