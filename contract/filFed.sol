@@ -6,7 +6,6 @@ interface IERC20 {
     function decimals() external view returns (uint8);
     function balanceOf(address account) external view returns (uint256);
 }
-//CA: 0x86541b4e87217871e96503D6E9A6ED46998b0E12
 contract FilFed  {
     address public owner;
     uint256 public amount;
