@@ -41,6 +41,18 @@ Checkout our - [Plugin Repo](https://github.com/Mano-08/content-monetizer)
 
 ---
 
+## Hackathon Tracks
+
+### 1. ⚡️ Hack The Sovereign Data Layer with Filecoin
+
+FILWPAgent integrates sovereign data layer principles by using Filecoin Network Storage for immutable content storage and Tableland's on-chain SQLite database for decentralized content registry, ensuring creators maintain full control over their data. The smart contracts on Filecoin handle payments in USDFC without intermediaries, while the AI agent searches the sovereign Tableland database directly, eliminating centralized dependencies. This architecture gives WordPress creators complete sovereignty over their content monetization.
+
+### 2. ⚡️ Hack The Decentralized Economy with USDFC on Filecoin
+
+FILWPAgent leverages USDFC stablecoin on Filecoin to create a decentralized content economy where WordPress creators set their own USDFC prices and receive direct payments through smart contracts, eliminating platform fees and intermediaries. The system enables fair compensation for content creators
+
+---
+
 **FILWPAgent: Empowering creators, enabling fair AI, and building the future of the web content economy.**
 
 ---
