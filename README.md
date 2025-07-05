@@ -26,7 +26,7 @@ Checkout our - [Plugin Repo](https://github.com/Mano-08/content-monetizer)
 
 3. **User Platform & Payment:**
    - Users visit our platform and search for topics.
-   - If relevant content is found in Tableland Database via onChain SQL AI operated engine search without using centralized database, users can pay the creator's specified amount (in USDFC) for consuming Content
+   - If relevant content is found in Tableland Database via onChain SQL AI operated engine search without using centralized database, users can pay the creator's specified amount (in USDFC) by approving to smartContract and calling 'PurchaseAccess'.
    - After calls to smart contract on Filecoin Network to access the full content and happily receive the content according to user query.
    - Payment and access are handled onChain with smart contracts, ensuring transparency.
 
