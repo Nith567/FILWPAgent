@@ -1,4 +1,4 @@
-# FILWPAgent: Fair AI Training Economy for WordPress
+# FILWPAgent: Fair AI Agent for WordPress Creators
 
 ## Problem
 WordPress powers approximately 43–44% of all websites worldwide as of mid-2025,in the CMS market, WordPress holds a dominant 61–63% share. AI companies are scraping content from WordPress for free. At the same time, AI systems cannot prove they are using content legally or compensating creators.
