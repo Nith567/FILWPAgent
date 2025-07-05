@@ -153,11 +153,8 @@ export default function Home() {
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Welcome to FILWPAgent</h3>
                   <p className="text-gray-300 mb-4">
-                    Ask me about WordPress content or search for monetized content!
+                    Reward Creators and consume the content with Filecoin Network Storage!
                   </p>
-                  <div className="space-y-2 text-sm text-gray-400">
-                    <p>💡 Try: &quot;Filecoin storage content&quot;</p>
-                  </div>
                 </div>
               )}
 
@@ -178,30 +175,25 @@ export default function Home() {
                     <div key={idx} className="p-4 mb-4 bg-white/10 rounded-xl">
                       <div><strong>Title:</strong> {content.title}</div>
                       <div><strong>Summary:</strong> {content.summary}</div>
-                      <div><strong>Tags:</strong> {renderTags(content.tags)}</div>
-                      <div><strong>Amount:</strong> {content.amount} USDFC</div>
-                      <div><strong>IPFS Hash:</strong> <span className="break-all text-sm">{content.hash}</span></div>
-                      <div><strong>Contract Address:</strong> <span className="break-all text-sm">{content.contractAddress}</span></div>
+                      <div><strong>Blog Tags:</strong> {renderTags(content.tags)}</div>
+                      <div><strong>Amount to be paid for Creator:</strong> {content.amount} USDFC</div>
+                      <div>
+                        <strong>Contract Address:</strong>{' '}
+                        <a
+                          href={`https://filecoin-testnet.blockscout.com/address/${content.contractAddress}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="break-all text-sm text-blue-300 underline hover:text-blue-200"
+                        >
+                          {content.contractAddress}
+                        </a>
+                      </div>
                       <div><strong>Wallet Address:</strong> <span className="break-all text-sm">{content.wallet_address}</span></div>
                       <div><strong>Timestamp:</strong> {content.timestamp}</div>
-                      <div>
-                        <strong>Download Link:</strong>
-                        {content.download ? (
-                          <a
-                            href={content.download}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-300 underline hover:text-blue-200 ml-2"
-                          >
-                            View Content
-                          </a>
-                        ) : (
-                          <span className="ml-2 text-gray-400">No download link</span>
-                        )}
-                      </div>
                       {isPurchaseConfirmed && (
                         <div className="mt-4 p-4 bg-white/10 rounded-lg">
                           <strong className="text-green-300 block mb-2">Content:</strong>
+                          <strong className="text-green-300 block mb-2">Proof of Log Hash: {content.hash}</strong>
                           <ReactMarkdown>{contentMap[content.hash] || "Loading..."}</ReactMarkdown>
                         </div>
                       )}
@@ -236,7 +228,7 @@ export default function Home() {
                 <input
                   type="text"
                   className="flex-grow p-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Ask about content, blockchain, or search for monetized content..."
+                  placeholder="Search for monetized content..."
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && onSendMessage()}
