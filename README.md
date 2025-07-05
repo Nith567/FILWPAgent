@@ -10,8 +10,11 @@ FILWPAgent is a plugin+AiAgentServiece that transforms your WordPress site into 
 
 
 > **NOTE:** Our WordPress plugin submitted is currently **under review**.  
-> In the meantime,we cloned Wordpress, running locally through apache server and uploaded plugin via zip file.
-Checkout our - [Plugin Repo](https://github.com/Mano-08/content-monetizer)
+> In the meantime, we cloned WordPress, running locally through Apache server and uploaded plugin via zip file.
+> 
+> **How to Setup WordPress Locally:** Watch our [tutorial video](https://youtu.be/TCrqv7Ng1OU?si=hN0VMw70W70UVAWM) for step-by-step instructions on setting up WordPress locally for testing the plugin.
+> 
+> Checkout our - [Plugin Repo](https://github.com/Mano-08/content-monetizer)
 
 
 ## How It Works
@@ -29,6 +32,9 @@ Checkout our - [Plugin Repo](https://github.com/Mano-08/content-monetizer)
    - If relevant content is found in Tableland Database via onChain SQL AI operated engine search without using centralized database, users can pay the creator's specified amount (in USDFC) by approving to smartContract and calling 'PurchaseAccess'.
    - After calls to smart contract on Filecoin Network to access the full content and happily receive the content according to user query.
    - Payment and access are handled onChain with smart contracts, ensuring transparency.
+
+**IMPORTANT** 
+-> IPFS hash is stored publicly in Tableland, but its hosted on Pinata's private gateway. Only our Agent has access to fetch and serve this content securely.
 
 ## Future Plans
 - Our WordPress plugin is currently in the approval queue (position #402) on the official WordPress plugin directory.
@@ -71,3 +77,7 @@ FILWPAgent leverages USDFC stablecoin on Filecoin to create a decentralized cont
 ### Plugin Under Review
 ![Plugin Under Review](./gallery/pluginReview.png)
  
+
+
+###Example 
+![Example](./gallery/All-in-One-Flow-Screenshot.png)
