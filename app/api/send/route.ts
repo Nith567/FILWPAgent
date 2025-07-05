@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import lighthouse from "@lighthouse-web3/sdk";
 import { privateKeyToAccount } from "viem/accounts";
 import { deployContract } from "../../../utils/deployContract";
 import { insertData, FilwpAgentRow } from '../../../utils/tableLand';
+import { pinata } from "@/utils/config";
 
 interface UploadRequest {
   content: string;
@@ -39,21 +39,30 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Agent private key not configured." }, { status: 500 });
     }
 
-    console.log("Uploading content to Lighthouse...");
-    // Using @lighthouse-web3/sdk for text upload
-    const lighthouseResponse = await lighthouse.uploadText(
-      blogContent,
-      process.env.LIGHTHOUSE_API_KEY,
-      wallet_address
-    );
-    console.log("Lighthouse response:", lighthouseResponse);
+console.log("Uploading content to Pinata...");
+const file = new File([blogContent], "blog.txt", { type: "text/plain" });
+const pinataResponse = await pinata.upload.private.file(file);
+const hash=pinataResponse?.cid;
+console.log("Pinata response:", pinataResponse);
 
-    console.log("Generating summary with AI...");
-    const hash = lighthouseResponse.data.Hash;
-    const fetchResponse = await fetch(
-      `https://gateway.lighthouse.storage/ipfs/${hash}`
-    );
-    const text = await fetchResponse.text();
+    // console.log("Uploading content to Lighthouse...");
+    // // Using @lighthouse-web3/sdk for text upload
+    // const lighthouseResponse = await lighthouse.uploadText(
+    //   blogContent,
+    //   process.env.LIGHTHOUSE_API_KEY,
+    //   wallet_address
+    // );
+    // console.log("Lighthouse response:", lighthouseResponse);
+
+    // console.log("Generating summary with AI...");
+    // const hash = lighthouseResponse.data.Hash;
+    // const fetchResponse = await fetch(
+    //   `https://gateway.lighthouse.storage/ipfs/${hash}`
+    // );
+    // const text = await fetchResponse.text();
+
+    const { data } = await pinata.gateways.private.get(hash);
+    const text = typeof data === "string" ? data : "";
     const { summary, tags } = await getSummariesFromAI(text);
 
    // Initialize WalletProvider from agentkit: https://docs.cdp.coinbase.com/agentkit/docs/wallet-management
@@ -66,7 +75,7 @@ export async function POST(req: Request) {
       summary,
       tags: JSON.stringify(tags),
       hash,
-      download: `https://gateway.lighthouse.storage/ipfs/${hash}`,
+      download: hash,
       title: title || "Untitled",
       wallet_address,
       amount,
@@ -85,8 +94,7 @@ export async function POST(req: Request) {
       message: "Content monetized successfully!",
       summary,
       tags,
-      lighthouseHash: lighthouseResponse.data.Hash,
-      download: `https://gateway.lighthouse.storage/ipfs/${hash}`,
+      cid:hash,
       contractAddress
     });
   } catch (error) {
